@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, Alert, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Alert,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import tw from "twrnc";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
@@ -10,7 +17,6 @@ const InputRetrieve = ({ navigation }) => {
   const [longitude, setLongitude] = useState(null);
   const [locationPermission, setLocationPermission] = useState(false);
 
-  // Request location permission and fetch current location
   useEffect(() => {
     const getLocationPermission = async () => {
       try {
@@ -20,7 +26,7 @@ const InputRetrieve = ({ navigation }) => {
           return;
         }
         setLocationPermission(true);
-        getCurrentLocation(); // Fetch location after permission is granted
+        getCurrentLocation(); 
       } catch (error) {
         Alert.alert("Error requesting location permission. Please try again.");
         console.error("Location permission error:", error);
@@ -30,12 +36,11 @@ const InputRetrieve = ({ navigation }) => {
     getLocationPermission();
   }, []);
 
-  // Get the current location
   const getCurrentLocation = async () => {
     try {
       let location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.High, // Use high accuracy for better results
-      });
+        accuracy: Location.Accuracy.High, 
+            });
       setLatitude(location.coords.latitude);
       setLongitude(location.coords.longitude);
     } catch (error) {
@@ -44,7 +49,6 @@ const InputRetrieve = ({ navigation }) => {
     }
   };
 
-  // Handle the form submission
   const handleCoordinatesSubmit = async () => {
     if (!name.trim() || latitude === null || longitude === null) {
       Alert.alert(
@@ -62,10 +66,10 @@ const InputRetrieve = ({ navigation }) => {
         },
       };
 
-      // Save user data to AsyncStorage
+    
       await AsyncStorage.setItem("userData", JSON.stringify(userData));
 
-      // Navigate to the next screen after storing data
+    
       navigation.navigate("Escape");
     } catch (error) {
       console.error("Error saving data:", error);
@@ -77,7 +81,7 @@ const InputRetrieve = ({ navigation }) => {
     <View style={tw`flex-1 bg-gray-100 p-4`}>
       <View style={styles.formContainer}>
         <Text style={tw`text-2xl text-center mb-2`}>
-          If you want to survive, I suggest you complete these:
+          If you want to survive, I suggest you complete this:
         </Text>
         <TextInput
           style={tw`border border-gray-300 rounded-lg p-3 mb-2 shadow-md bg-white`}
@@ -87,13 +91,15 @@ const InputRetrieve = ({ navigation }) => {
           placeholderTextColor="#FF6347"
         />
 
-        <View style={styles.buttonContainer}>
-          <Button
-            title="Submit"
-            onPress={handleCoordinatesSubmit}
-            color="#FF6347"
-          />
-        </View>
+        <View style={tw`w-4/5 p-6 items-center justify-center ml-9`}>
+  <TouchableOpacity
+    onPress={handleCoordinatesSubmit}
+    style={tw`bg-[#FF6347] py-3 px-6 rounded-full shadow-lg`}
+  >
+    <Text style={tw`text-white text-lg text-center`}>Submit</Text>
+  </TouchableOpacity>
+</View>
+
       </View>
 
       <View style={styles.tipsContainer}>
@@ -112,11 +118,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     marginBottom: 20,
-  },
-  buttonContainer: {
-    marginTop: 10,
-    width: "50%",
-    alignSelf: "center",
   },
   tipsContainer: {
     marginTop: 0,

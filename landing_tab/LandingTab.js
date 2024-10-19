@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { Text, View, Button, Animated, ImageBackground } from 'react-native';
+import { Text, View, TouchableOpacity, Animated, ImageBackground } from 'react-native';
 import tw from 'twrnc';
 import { useEffect, useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -102,7 +102,12 @@ export default function LandingTab() {
 
      
       <Animated.View style={{ transform: [{ scale: scaleAnim }], marginBottom: 20 }}>
-        <Button title="Escape" onPress={handleEscape} color="#FF6347" />
+        <TouchableOpacity
+          onPress={handleEscape}
+          style={tw`bg-[#FF6347] py-3 px-6 rounded-full shadow-lg`}
+        >
+          <Text style={tw`text-white text-lg text-center`}>Escape</Text>
+        </TouchableOpacity>
       </Animated.View>
 
       <StatusBar style="auto" />

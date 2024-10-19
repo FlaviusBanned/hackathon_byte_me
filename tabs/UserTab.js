@@ -3,14 +3,13 @@ import { Text, View, TouchableOpacity, Alert } from 'react-native';
 import tw from 'twrnc';
 import MapView, { Marker } from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native'; 
+import { useNavigation, useRoute } from '@react-navigation/native'; 
 
 const UserTab = () => {
   const [userData, setUserData] = useState(null);
-  const [devices, setDevices] = useState([]);
-  const [isSearching, setIsSearching] = useState(false);
-  
-  const navigation = useNavigation(); 
+  const [alertMessage, setAlertMessage] = useState(null);
+  const navigation = useNavigation();
+  const route = useRoute();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -25,11 +24,15 @@ const UserTab = () => {
     };
 
     fetchUserData();
-  }, []);
+    
+  
+    if (route.params?.alertMessage) {
+      setAlertMessage(route.params.alertMessage);
+    }
+  }, [route.params]);
 
   const handleChatPress = async () => {
-      navigation.navigate('ChatRedirect'); 
-    
+    navigation.navigate('ChatRedirect'); 
   };
 
   return (
@@ -52,6 +55,17 @@ const UserTab = () => {
             title={userData.name} 
             description={`Location: ${userData.coordinates.latitude}, ${userData.coordinates.longitude}`} 
           />
+          {alertMessage && (
+            <Marker
+              coordinate={{
+                latitude: userData.coordinates.latitude + 0.001, 
+                longitude: userData.coordinates.longitude + 0.001,
+              }}
+              title="Alert"
+              description={alertMessage}
+              pinColor="red" 
+            />
+          )}
         </MapView>
       ) : (
         <View style={tw`flex-1 justify-center items-center`}>
@@ -61,7 +75,7 @@ const UserTab = () => {
 
       <View style={tw`flex-row justify-around items-center bg-white p-4 shadow-md`}>
         <TouchableOpacity style={tw`flex-1`} onPress={handleChatPress}>
-          <Text style={tw`text-center text-lg text-orange-600`}>Găsește Dispozitive</Text>
+          <Text style={tw`text-center text-lg text-orange-600`}>Find devices</Text>
         </TouchableOpacity>
       </View>
     </View>
