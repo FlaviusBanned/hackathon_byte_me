@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LandingTab from "./landing_tab/LandingTab";
 import UserTab from "./tabs/UserTab";
 import InputRetrieve from "./tabs/InputRetrieve";
-
+import ChatRedirect from "./chat_redirect/ChatRedirect";
 const Stack = createNativeStackNavigator();
 
 export default function MainApp() {
@@ -30,6 +30,9 @@ export default function MainApp() {
     name="Escape"
     component={UserTab}
   />
+  <Stack.Screen name="ChatRedirect"
+   component={ChatRedirect} />
+
 </Stack.Navigator>
 
     </NavigationContainer>
