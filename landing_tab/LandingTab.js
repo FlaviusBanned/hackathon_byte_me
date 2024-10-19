@@ -17,25 +17,22 @@ export default function LandingTab() {
   };
 
   const animateTexts = () => {
-    // Start by fading in the bottom text
     Animated.timing(fadeAnim3, {
       toValue: 1, 
       duration: 1500, 
       useNativeDriver: true,
     }).start(() => {
-      // Fade in the first text after the bottom text
+      
       Animated.timing(fadeAnim1, {
         toValue: 1, 
         duration: 1500, 
         useNativeDriver: true,
       }).start(() => {
-        // Fade in the second text after the first
         Animated.timing(fadeAnim2, {
           toValue: 1, 
           duration: 1500, 
           useNativeDriver: true,
         }).start(() => {
-          // Start the scaling animation for the button after all texts have appeared
           startButtonScaling();
         });
       });
@@ -46,12 +43,12 @@ export default function LandingTab() {
     Animated.loop(
       Animated.sequence([
         Animated.timing(scaleAnim, {
-          toValue: 1.3, // Scale up
+          toValue: 1.3, 
           duration: 400,
           useNativeDriver: true,
         }),
         Animated.timing(scaleAnim, {
-          toValue: 1, // Scale back to original
+          toValue: 1, 
           duration: 400,
           useNativeDriver: true,
         }),
@@ -68,7 +65,7 @@ export default function LandingTab() {
       source={require('../landing_tab/back_app.jpg')} 
       style={tw`flex-1 justify-center items-center p-4`} 
     >
-      {/* Top text animations */}
+    
       <View style={tw`absolute top-10 w-full items-center`}>
         <Animated.View style={{ opacity: fadeAnim1 }}>
           <Text style={tw`text-2xl text-white text-center mb-2`}>
@@ -82,7 +79,6 @@ export default function LandingTab() {
         </Animated.View>
       </View>
 
-      {/* Bottom text animation */}
       <View
         style={[
           tw`absolute bottom-4 w-4/5 p-6 items-center justify-center rounded-lg`,
