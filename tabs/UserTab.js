@@ -61,7 +61,7 @@ const UserTab = () => {
 
       <View style={tw`flex-row justify-around items-center bg-white p-4 shadow-md`}>
         <TouchableOpacity style={tw`flex-1`} onPress={handleChatPress}>
-          <Text style={tw`text-center text-lg text-orange-600`}>Chat</Text>
+          <Text style={tw`text-center text-lg text-orange-600`}>Găsește Dispozitive</Text>
         </TouchableOpacity>
       </View>
     </View>
