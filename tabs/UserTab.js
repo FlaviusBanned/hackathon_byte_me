@@ -71,24 +71,27 @@ const UserTab = () => {
   return (
     <View style={tw`flex-1 bg-gray-100`}>
       {userData && userData.coordinates ? (
-        <MapView
-          style={tw`flex-1`}
-          initialRegion={{
-            latitude: userData.coordinates.latitude,
-            longitude: userData.coordinates.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
+      <MapView
+      style={tw`flex-1`}
+      initialRegion={{
+        latitude: usersData[0]?.coordinates.latitude || 0,
+        longitude: usersData[0]?.coordinates.longitude || 0,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      }}
+    >
+      {usersData.map((user, index) => (
+        <Marker
+          key={index}
+          coordinate={{
+            latitude: user.coordinates.latitude,
+            longitude: user.coordinates.longitude,
           }}
-        >
-          <Marker
-            coordinate={{
-              latitude: userData.coordinates.latitude,
-              longitude: userData.coordinates.longitude,
-            }}
-            title={userData.name} 
-            description={`Location: ${userData.coordinates.latitude}, ${userData.coordinates.longitude}`} 
-          />
-        </MapView>
+          title={user.name}
+          description={`Location: ${user.coordinates.latitude}, ${user.coordinates.longitude}`}
+        />
+      ))}
+    </MapView>
       ) : (
         <View style={tw`flex-1 justify-center items-center`}>
           <Text style={tw`text-lg text-center`}>Please enter valid coordinates to view the map.</Text>
