@@ -1,44 +1,77 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
-import tw from 'twrnc';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState, useEffect } from "react";
+import { View, Text, TextInput, Button, Alert, StyleSheet } from "react-native";
+import tw from "twrnc";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Location from "expo-location";
 
 const InputRetrieve = ({ navigation }) => {
-  const [name, setName] = useState('');
-  const [latitude, setLatitude] = useState('');
-  const [longitude, setLongitude] = useState('');
+  const [name, setName] = useState("");
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [locationPermission, setLocationPermission] = useState(false);
+
+  // Request location permission and fetch current location
+  useEffect(() => {
+    const getLocationPermission = async () => {
+      try {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          Alert.alert("Permission to access location was denied");
+          return;
+        }
+        setLocationPermission(true);
+        getCurrentLocation(); // Fetch location after permission is granted
+      } catch (error) {
+        Alert.alert("Error requesting location permission. Please try again.");
+        console.error("Location permission error:", error);
+      }
+    };
+
+    getLocationPermission();
+  }, []);
+
+  // Get the current location
+  const getCurrentLocation = async () => {
+    try {
+      let location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High, // Use high accuracy for better results
+      });
+      setLatitude(location.coords.latitude);
+      setLongitude(location.coords.longitude);
+    } catch (error) {
+      Alert.alert("Error fetching location. Please try again.");
+      console.error("Error fetching location:", error);
+    }
+  };
+
+  // Handle the form submission
   const handleCoordinatesSubmit = async () => {
-    if (!name || !latitude || !longitude) {
-      Alert.alert('Please enter your name and valid coordinates');
+    if (!name.trim() || latitude === null || longitude === null) {
+      Alert.alert(
+        "Please enter your name and make sure your location is detected."
+      );
       return;
     }
-    
-    const latNum = parseFloat(latitude);
-    const longNum = parseFloat(longitude);
-    
-    if (isNaN(latNum) || isNaN(longNum) || latNum < -90 || latNum > 90 || longNum < -180 || longNum > 180) {
-      Alert.alert('Please enter valid numeric coordinates within the ranges:\nLatitude: -90 to 90\nLongitude: -180 to 180');
-      return;
-    }
-  
+
     try {
       const userData = {
         name: name.trim(),
         coordinates: {
-          latitude: latNum,
-          longitude: longNum,
+          latitude,
+          longitude,
         },
       };
 
-      await AsyncStorage.setItem('userData', JSON.stringify(userData));
-  
-      navigation.navigate('Escape');
+      // Save user data to AsyncStorage
+      await AsyncStorage.setItem("userData", JSON.stringify(userData));
+
+      // Navigate to the next screen after storing data
+      navigation.navigate("Escape");
     } catch (error) {
-      console.error('Error saving data:', error);
-      Alert.alert('Error saving data. Please try again.');
+      console.error("Error saving data:", error);
+      Alert.alert("Error saving data. Please try again.");
     }
   };
-  
 
   return (
     <View style={tw`flex-1 bg-gray-100 p-4`}>
@@ -53,32 +86,21 @@ const InputRetrieve = ({ navigation }) => {
           placeholder="Enter your name"
           placeholderTextColor="#FF6347"
         />
-        <TextInput
-          style={tw`border border-gray-300 rounded-lg p-3 mb-2 shadow-md bg-white`}
-          value={latitude}
-          onChangeText={setLatitude}
-          placeholder="Enter your latitude (e.g., 45.6350)"
-          placeholderTextColor="#FF6347"
-          keyboardType="numeric"
-        />
-        <TextInput
-          style={tw`border border-gray-300 rounded-lg p-3 mb-2 shadow-md bg-white`}
-          value={longitude}
-          onChangeText={setLongitude}
-          placeholder="Enter your longitude (e.g., 25.5925)"
-          placeholderTextColor="#FF6347"
-          keyboardType="numeric"
-        />
 
         <View style={styles.buttonContainer}>
-          <Button title="Submit" onPress={handleCoordinatesSubmit} color="#FF6347" />
+          <Button
+            title="Submit"
+            onPress={handleCoordinatesSubmit}
+            color="#FF6347"
+          />
         </View>
       </View>
 
       <View style={styles.tipsContainer}>
         <Text style={tw`text-xl text-center`}>Tips:</Text>
         <Text style={tw`text-sm text-gray-600 text-center mt-2`}>
-          You can use your GPS, compass, or beacons to find your coordinates quickly. Time is ticking!
+          Your GPS will help us track your location. Ensure it's enabled for
+          survival!
         </Text>
       </View>
     </View>
@@ -88,13 +110,13 @@ const InputRetrieve = ({ navigation }) => {
 const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     marginBottom: 20,
   },
   buttonContainer: {
     marginTop: 10,
-    width: '50%',
-    alignSelf: 'center',
+    width: "50%",
+    alignSelf: "center",
   },
   tipsContainer: {
     marginTop: 0,
