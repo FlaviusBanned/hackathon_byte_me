@@ -10,11 +10,28 @@ const Stack = createNativeStackNavigator();
 export default function MainApp() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={LandingTab} />
-        <Stack.Screen name="InputRetrieve" component={InputRetrieve} />
-        <Stack.Screen name="Escape" component={UserTab} />
-      </Stack.Navigator>
+     <Stack.Navigator initialRouteName="Home">
+  <Stack.Screen
+    name="Home"
+    component={LandingTab}
+    options={{
+      headerStyle: { backgroundColor: 'transparent' }, 
+      headerTintColor: 'black',
+      headerTitleStyle: { fontWeight: 'bold' },
+      headerShown: false,
+    }}
+  />
+  <Stack.Screen
+    name="InputRetrieve"
+    component={InputRetrieve}
+   
+  />
+  <Stack.Screen
+    name="Escape"
+    component={UserTab}
+  />
+</Stack.Navigator>
+
     </NavigationContainer>
   );
 }
